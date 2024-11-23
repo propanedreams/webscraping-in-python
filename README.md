@@ -29,6 +29,10 @@ Setup
 git clone https://github.com/propanedreams/web-scraper-sqlite.git
 cd web-scraper-sqlite
 
+Setup environment:
+    
+python -m venv .venv
+
 Install dependencies:
 
 pip install -r requirements.txt
