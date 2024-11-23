@@ -37,15 +37,6 @@ Run the scraper:
 
     python scraper.py
 
-Folder Structure
-
-project/
-│
-├── db/
-│   └── scraped_data.db  # SQLite database storing the scraped data
-├── scraper.py           # Main Python script
-├── README.md            # Project documentation
-├── requirements.txt     # Python dependencies
 
 Example Usage
 
