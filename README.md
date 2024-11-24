@@ -1,6 +1,7 @@
-Web Scraper with SQLite Persistence
+Web Scraper(s) with SQLite Persistence
+This personal learning project will expand with time, different scrapers/scraping methods will be used. 
 
-A simple Python web scraper that extracts generic information from websites (e.g., titles, meta descriptions, headings, links, and images) and stores the data in a SQLite database.
+A simple Python web scraper and SEO scraper that extracts generic information from websites (e.g., titles, meta descriptions, headings, links, and images) and stores the data in a SQLite database.
 Features
 
     Extracts:
