@@ -27,8 +27,8 @@ Setup
 
     Clone the repository:
 
-git clone https://github.com/propanedreams/web-scraper-sqlite.git
-cd web-scraper-sqlite
+git clone https://github.com/propanedreams/webscraping-in-python.git
+cd webscraping-in-python
 
 Setup environment:
     
