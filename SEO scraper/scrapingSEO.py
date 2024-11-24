@@ -1,15 +1,73 @@
+import os
+import sqlite3
 import requests
 from bs4 import BeautifulSoup
 
+# Database setup
+DB_FOLDER = "db"
+DB_PATH = os.path.join(DB_FOLDER, "seo_data.db")
+
+def initialize_db():
+    """Initialize the SQLite database and create the table."""
+    os.makedirs(DB_FOLDER, exist_ok=True)
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # Create a table to store SEO data
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS seo_data (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            url TEXT NOT NULL,
+            canonical_url TEXT,
+            meta_description TEXT,
+            meta_keywords TEXT,
+            og_title TEXT,
+            og_description TEXT,
+            og_url TEXT,
+            twitter_title TEXT,
+            twitter_description TEXT,
+            twitter_url TEXT,
+            alternate_links TEXT,
+            internal_links TEXT,
+            external_links TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+def save_to_db(data):
+    """Save scraped SEO data to the SQLite database."""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # Insert data into the table
+    cursor.execute('''
+        INSERT INTO seo_data (
+            url, canonical_url, meta_description, meta_keywords,
+            og_title, og_description, og_url,
+            twitter_title, twitter_description, twitter_url,
+            alternate_links, internal_links, external_links
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (
+        data["url"], data["canonical_url"], data["meta_description"], data["meta_keywords"],
+        data["og_title"], data["og_description"], data["og_url"],
+        data["twitter_title"], data["twitter_description"], data["twitter_url"],
+        "\n".join(data["alternate_links"]),
+        "\n".join(data["internal_links"]),
+        "\n".join(data["external_links"]),
+    ))
+    conn.commit()
+    conn.close()
+
 def scrape_seo_info(url):
-    # Send an HTTP GET request
+    """Scrape SEO data from the given URL."""
     response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
 
     if response.status_code != 200:
         print(f"Failed to fetch {url}: {response.status_code}")
         return
 
-    # Parse the HTML content
     soup = BeautifulSoup(response.content, 'html.parser')
 
     # Extract canonical link
@@ -18,59 +76,53 @@ def scrape_seo_info(url):
 
     # Extract alternate hreflang links
     alternate_links = [
-        {"hreflang": link.get("hreflang", "unknown"), "href": link["href"]}
+        f"{link.get('hreflang', 'unknown')}: {link['href']}"
         for link in soup.find_all("link", rel="alternate")
         if "hreflang" in link.attrs and "href" in link.attrs
     ]
 
     # Extract meta tags for SEO
-    meta_tags = {}
-    for meta_name in ["description", "keywords"]:
-        meta_tag = soup.find("meta", attrs={"name": meta_name})
-        meta_tags[meta_name] = meta_tag["content"] if meta_tag else f"No {meta_name} found"
+    meta_description = soup.find("meta", attrs={"name": "description"})
+    meta_keywords = soup.find("meta", attrs={"name": "keywords"})
 
     # Extract Open Graph meta tags
-    og_tags = {}
-    for og_name in ["og:title", "og:description", "og:url"]:
-        og_tag = soup.find("meta", property=og_name)
-        og_tags[og_name] = og_tag["content"] if og_tag else f"No {og_name} found"
+    og_title = soup.find("meta", property="og:title")
+    og_description = soup.find("meta", property="og:description")
+    og_url = soup.find("meta", property="og:url")
 
     # Extract Twitter card meta tags
-    twitter_tags = {}
-    for twitter_name in ["twitter:title", "twitter:description", "twitter:url"]:
-        twitter_tag = soup.find("meta", attrs={"name": twitter_name})
-        twitter_tags[twitter_name] = twitter_tag["content"] if twitter_tag else f"No {twitter_name} found"
+    twitter_title = soup.find("meta", attrs={"name": "twitter:title"})
+    twitter_description = soup.find("meta", attrs={"name": "twitter:description"})
+    twitter_url = soup.find("meta", attrs={"name": "twitter:url"})
 
     # Extract internal and external links
     links = [a["href"] for a in soup.find_all("a", href=True)]
     internal_links = [link for link in links if url in link or link.startswith("/")]
     external_links = [link for link in links if not (url in link or link.startswith("/"))]
 
-    # Print the results
-    print(f"Canonical URL: {canonical_url}")
-    print("\nAlternate Links:")
-    for alt in alternate_links:
-        print(f"  {alt['hreflang']}: {alt['href']}")
-    
-    print("\nMeta Tags:")
-    for name, content in meta_tags.items():
-        print(f"  {name}: {content}")
+    # Prepare data for saving
+    data = {
+        "url": url,
+        "canonical_url": canonical_url,
+        "meta_description": meta_description["content"] if meta_description else "No description found",
+        "meta_keywords": meta_keywords["content"] if meta_keywords else "No keywords found",
+        "og_title": og_title["content"] if og_title else "No OG title found",
+        "og_description": og_description["content"] if og_description else "No OG description found",
+        "og_url": og_url["content"] if og_url else "No OG URL found",
+        "twitter_title": twitter_title["content"] if twitter_title else "No Twitter title found",
+        "twitter_description": twitter_description["content"] if twitter_description else "No Twitter description found",
+        "twitter_url": twitter_url["content"] if twitter_url else "No Twitter URL found",
+        "alternate_links": alternate_links,
+        "internal_links": internal_links[:10],  # Limit to first 10 for brevity
+        "external_links": external_links[:10],  # Limit to first 10 for brevity
+    }
 
-    print("\nOpen Graph Tags:")
-    for name, content in og_tags.items():
-        print(f"  {name}: {content}")
+    # Save data to the database
+    save_to_db(data)
+    print(f"Data saved for URL: {url}")
 
-    print("\nTwitter Tags:")
-    for name, content in twitter_tags.items():
-        print(f"  {name}: {content}")
-
-    print("\nInternal Links:")
-    for link in internal_links[:10]:  # Show first 10 for brevity
-        print(f"  {link}")
-
-    print("\nExternal Links:")
-    for link in external_links[:10]:  # Show first 10 for brevity
-        print(f"  {link}")
+# Initialize the database
+initialize_db()
 
 # URL to scrape
 url = "https://nordicrace.dk/"
