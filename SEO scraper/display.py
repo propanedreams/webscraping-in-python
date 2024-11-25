@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import csv
 
 # Database path
 DB_FOLDER = "db"
@@ -19,6 +20,7 @@ def display_data():
     # Query to retrieve all data
     cursor.execute("SELECT * FROM seo_data")
     rows = cursor.fetchall()
+    columns = [desc[0] for desc in cursor.description]  # Get column headers
 
     # Display the results
     if not rows:
@@ -41,8 +43,21 @@ def display_data():
             print(f"External Links: {row[13]}")
             print("-" * 50)
 
+        # Ask if the user wants to save the data to CSV
+        save_to_csv = input("Would you like to save this data to a CSV file? (yes/no): ").strip().lower()
+        if save_to_csv in ['yes', 'y']:
+            write_to_csv(rows, columns)
+            print("Data successfully written to seo_data.csv!")
+
     # Close the database connection
     conn.close()
+
+def write_to_csv(data, headers):
+    """Write the data to a CSV file."""
+    with open("seo_data.csv", "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(headers)  # Write headers
+        writer.writerows(data)    # Write rows
 
 # Call the display function
 display_data()
