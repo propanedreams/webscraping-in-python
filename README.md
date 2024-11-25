@@ -1,6 +1,7 @@
-Web Scraper with SQLite Persistence
+Web Scraper(s) with SQLite Persistence
+This personal learning project will expand with time, different scrapers/scraping methods will be used. 
 
-A simple Python web scraper that extracts generic information from websites (e.g., titles, meta descriptions, headings, links, and images) and stores the data in a SQLite database.
+A simple Python web scraper and SEO scraper that extracts generic information from websites (e.g., titles, meta descriptions, headings, links, and images) and stores the data in a SQLite database.
 Features
 
     Extracts:
@@ -26,8 +27,8 @@ Setup
 
     Clone the repository:
 
-git clone https://github.com/propanedreams/web-scraper-sqlite.git
-cd web-scraper-sqlite
+git clone https://github.com/propanedreams/webscraping-in-python.git
+cd webscraping-in-python
 
 Setup environment:
     
