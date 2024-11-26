@@ -5,6 +5,7 @@ import os
 DB_FOLDER = "db"
 DB_PATH = os.path.join(DB_FOLDER, "news_details.db")
 print(DB_PATH)
+
 def display_news():
     """Display all news articles stored in the SQLite database."""
     # Check if the database exists
@@ -23,8 +24,8 @@ def display_news():
     if not rows:
         print("No news articles found in the database.")
     else:
-        print(f"{'ID':<5} {'Headline':<50} {'Description':<70} {'Last Updated':<15} {'Category':<15} {'Site':<30}")
-        print("-" * 150)
+        print(f"{'ID':<5} {'Headline':<50} {'Description':<70} {'Last Updated':<15} {'Category':<15} {'Site':<30} {'Scrape Time':<20}")
+        print("-" * 180)
         for row in rows:
             # Replace None values with "N/A" for better readability
             id = row[0]
@@ -33,7 +34,11 @@ def display_news():
             last_updated = row[3] or "N/A"
             category = row[4] or "N/A"
             site = row[5] or "N/A"
-            print(f"{id:<5} {headline:<50} {description:<70} {last_updated:<15} {category:<15} {site:<30}")
+            scrapetime = row[6] or "N/A"
+            print(f"{id:<5} {headline:<50} {description:<70} {last_updated:<15} {category:<15} {site:<30} {scrapetime:<20}")
 
     # Close the database connection
     conn.close()
+
+if __name__ == "__main__":
+    display_news()
