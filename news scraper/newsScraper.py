@@ -58,16 +58,16 @@ def scrape_bbc_news():
     url = "https://www.bbc.com/news"
     driver.get(url)
 
-    # Try to accept cookies
-    try:
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, '//button[contains(text(), "Agree")]'))
-        ).click()
-    except Exception as e:
-        print("Cookie banner not found or failed to click:", e)
+    # # Try to accept cookies
+    # try:
+    #     WebDriverWait(driver, 10).until(
+    #         EC.element_to_be_clickable((By.XPATH, '//button[contains(text(), "Agree")]'))
+    #     ).click()
+    # except Exception as e:
+    #     print("Cookie banner not found or failed to click:", e)
 
     # Wait for the page to load fully
-    driver.implicitly_wait(10)
+    driver.implicitly_wait(5)
 
     # Scrape detailed news
     news_list = []
