@@ -120,28 +120,28 @@ def scrape_bbc_news():
     driver.quit()
     return news_list, url
 
-def display_news():
-    """Display all news stored in the SQLite database."""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+# def display_news():
+#     """Display all news stored in the SQLite database."""
+#     conn = sqlite3.connect(DB_PATH)
+#     cursor = conn.cursor()
 
-    # Retrieve all news
-    cursor.execute("SELECT * FROM news")
-    rows = cursor.fetchall()
+#     # Retrieve all news
+#     cursor.execute("SELECT * FROM news")
+#     rows = cursor.fetchall()
 
-    if not rows:
-        print("No news articles found in the database.")
-    else:
-        for row in rows:
-            print(f"ID: {row[0]}")
-            print(f"Headline: {row[1]}")
-            print(f"Description: {row[2]}")
-            print(f"Last Updated: {row[3]}")
-            print(f"Category: {row[4]}")
-            print(f"Source: {row[5]}")
-            print("-" * 50)
+#     if not rows:
+#         print("No news articles found in the database.")
+#     else:
+#         for row in rows:
+#             print(f"ID: {row[0]}")
+#             print(f"Headline: {row[1]}")
+#             print(f"Description: {row[2]}")
+#             print(f"Last Updated: {row[3]}")
+#             print(f"Category: {row[4]}")
+#             print(f"Source: {row[5]}")
+#             print("-" * 50)
 
-    conn.close()
+#     conn.close()
 
 # Main script
 initialize_db()
@@ -155,6 +155,6 @@ if news_list:
 else:
     print("No news articles found.")
 
-# Display saved news
-print("\nSaved News Articles:")
-display_news()
+# # Display saved news
+# print("\nSaved News Articles:")
+# display_news()
