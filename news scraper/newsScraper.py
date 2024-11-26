@@ -6,10 +6,16 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-
+from datetime import datetime
 # Database setup
 DB_FOLDER = "db"
 DB_PATH = os.path.join(DB_FOLDER, "news_details.db")
+
+def get_todays_datetime():
+    """Return today's date and time."""
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Format: YYYY-MM-DD HH:MM:SS
+
+
 
 def initialize_db():
     """Initialize the SQLite database and create the table."""
@@ -25,13 +31,14 @@ def initialize_db():
             description TEXT,
             last_updated TEXT,
             category TEXT,
-            site TEXT NOT NULL
+            site TEXT NOT NULL, 
+            scrapetime TEXT
         )
     ''')
     conn.commit()
     conn.close()
 
-def save_to_db(news_list, site):
+def save_to_db(news_list, site, scrapetime):
     """Save a list of news details to the SQLite database."""
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -40,8 +47,8 @@ def save_to_db(news_list, site):
     for news in news_list:
         cursor.execute('''
             INSERT INTO news (headline, description, last_updated, category, site)
-            VALUES (?, ?, ?, ?, ?)
-        ''', (news['headline'], news['description'], news['last_updated'], news['category'], site))
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (news['headline'], news['description'], news['last_updated'], news['category'], site, scrapetime))
 
     conn.commit()
     conn.close()
@@ -140,10 +147,10 @@ def display_news():
 initialize_db()
 print("Scraping BBC News...")
 news_list, site = scrape_bbc_news()
-
+scrapetime = get_todays_datetime()
 if news_list:
     print(f"Found {len(news_list)} news articles.")
-    save_to_db(news_list, site)
+    save_to_db(news_list, site, scrapetime)
     print("News articles saved to the database.")
 else:
     print("No news articles found.")
