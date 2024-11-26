@@ -46,7 +46,7 @@ def save_to_db(news_list, site, scrapetime):
     # Insert news details into the database
     for news in news_list:
         cursor.execute('''
-            INSERT INTO news (headline, description, last_updated, category, site)
+            INSERT INTO news (headline, description, last_updated, category, site, scrapetime)
             VALUES (?, ?, ?, ?, ?, ?)
         ''', (news['headline'], news['description'], news['last_updated'], news['category'], site, scrapetime))
 
