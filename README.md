@@ -1,27 +1,17 @@
 Web Scraper(s) with SQLite Persistence
 This personal learning project will expand with time, different scrapers/scraping methods will be used. 
 
-A simple Python web scraper, news scraper and SEO scraper that extracts generic information from websites (e.g., titles, meta descriptions, headings, links, and images) and stores the data in a SQLite database.
-Features
+A simple Python web scraper, news scraper, reddit scraper and SEO scraper that extracts generic information from websites (e.g., titles, meta descriptions, headings, links, and images) and stores the data in a SQLite database.
 
-    Extracts:
-        Page title
-        Meta description
-        Headings (h1, h2, h3)
-        Links (<a href>)
-        Images (<img src>)
-    Saves scraped data to a SQLite database (scraped_data.db) in the db/ folder.
-    Automatically creates the db folder and database file if they don't exist.
 
-How It Works
+How they Works
 
     Scraper:
         Sends an HTTP request to the target URL.
         Parses the HTML response to extract relevant data.
     Database:
         Stores the scraped data (URL, title, meta description, headings, links, images) in a SQLite database.
-    Reusable:
-        Works with most websites that share standard HTML structures.
+
 
 Setup
 
