@@ -116,36 +116,9 @@ def scrape_reddit(subreddit_name, keyword=None):
 
     return posts, comments
 
-def display_data():
-    """Display all data stored in the SQLite database."""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
 
-    # Display posts
-    print("Reddit Posts:")
-    cursor.execute("SELECT * FROM reddit_posts")
-    posts = cursor.fetchall()
-    for post in posts:
-        print(f"ID: {post[0]}")
-        print(f"Title: {post[1]}")
-        print(f"Subreddit: {post[2]}")
-        print(f"Score: {post[3]}")
-        print(f"Comments: {post[4]}")
-        print(f"Sentiment: {post[5]:.2f}")
-        print("-" * 50)
 
-    # Display comments
-    print("\nReddit Comments:")
-    cursor.execute("SELECT * FROM reddit_comments")
-    comments = cursor.fetchall()
-    for comment in comments[:10]:  # Display only the first 10 comments for brevity
-        print(f"ID: {comment[0]}")
-        print(f"Post ID: {comment[1]}")
-        print(f"Comment: {comment[2]}")
-        print(f"Sentiment: {comment[3]:.2f}")
-        print("-" * 50)
 
-    conn.close()
 
 # Main script
 initialize_db()
@@ -162,6 +135,4 @@ if posts:
 else:
     print("No matching posts found.")
 
-# Display data
-print("\nSaved Data:")
-display_data()
+
