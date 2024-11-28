@@ -12,7 +12,6 @@ How they Works
     Database:
         Stores the scraped data (URL, title, meta description, headings, links, images) in a SQLite database.
 
-
 Setup
 
     Clone the repository:
