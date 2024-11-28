@@ -16,8 +16,6 @@ client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 user_agent = os.getenv("USER_AGENT")
 
-
-
 def initialize_db():
     """Initialize the SQLite database and create the table."""
     os.makedirs(DB_FOLDER, exist_ok=True)
@@ -115,10 +113,6 @@ def scrape_reddit(subreddit_name, keyword=None):
             comments.append(comment_data)
 
     return posts, comments
-
-
-
-
 
 # Main script
 initialize_db()
