@@ -1,12 +1,20 @@
+import os
+import sqlite3
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-import sqlite3
+from datetime import datetime
 
+DB_FOLDER = "db"
+DB_PATH = os.path.join(DB_FOLDER, "news_details.db")
 # Initialize SQLite Database
 def initialize_db():
-    conn = sqlite3.connect('nba_stats.db')
+    os.makedirs(DB_FOLDER, exist_ok=True)
+    
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS player_stats (
