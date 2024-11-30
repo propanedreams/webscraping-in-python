@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime
 
 DB_FOLDER = "db"
-DB_PATH = os.path.join(DB_FOLDER, "news_details.db")
+DB_PATH = os.path.join(DB_FOLDER, "nba_stats.db")
 # Initialize SQLite Database
 def initialize_db():
     os.makedirs(DB_FOLDER, exist_ok=True)
