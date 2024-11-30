@@ -11,7 +11,6 @@ load_dotenv()
 DB_FOLDER = "db"
 DB_PATH = os.path.join(DB_FOLDER, "reddit_data.db")
 
-
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 user_agent = os.getenv("USER_AGENT")
