@@ -2,7 +2,7 @@ import sqlite3
 
 def display_players():
     """Retrieve and display all player stats from the SQLite database."""
-    conn = sqlite3.connect('nba_stats.db')
+    conn = sqlite3.connect( 'nba_stats.db')
     cursor = conn.cursor()
 
     # Query to retrieve all player stats
