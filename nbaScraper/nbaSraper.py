@@ -37,7 +37,7 @@ def initialize_db():
 
 # Save player stats to the database
 def save_to_db(player_stats):
-    conn = sqlite3.connect('nba_stats.db')
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     for player in player_stats:
         cursor.execute('''
