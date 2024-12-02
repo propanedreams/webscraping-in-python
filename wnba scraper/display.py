@@ -1,5 +1,7 @@
 import sqlite3
 from prettytable import PrettyTable
+import pandas as pd
+import os
 
 # Database Path
 DB_FOLDER = "db"
@@ -43,5 +45,24 @@ def display_players():
 
     conn.close()
 
+def export_to_csv():
+    """Export player stats from the SQLite database to a CSV file."""
+    conn = sqlite3.connect(DB_PATH)
+    try:
+        df = pd.read_sql_query("SELECT * FROM player_stats", conn)
+        output_path = os.path.join(DB_FOLDER, "wnba_stats.csv")
+        df.to_csv(output_path, index=False)
+        print(f"Data exported to {output_path}")
+    except Exception as e:
+        print(f"Error exporting to CSV: {e}")
+    finally:
+        conn.close()
+
 if __name__ == "__main__":
+    # Display the player stats
     display_players()
+
+    # Ask the user if they want to export the data to a CSV file
+    save_csv = input("Would you like to save this data to a CSV file? (yes/no): ").strip().lower()
+    if save_csv in ['yes', 'y']:
+        export_to_csv()
