@@ -100,3 +100,48 @@ def save_to_db(weather_data):
         ))
     conn.commit()
     conn.close()
+
+def display_weather_data():
+    """Display all weather data stored in the database."""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM weather_data")
+    rows = cursor.fetchall()
+    conn.close()
+
+    if rows:
+        df = pd.DataFrame(rows, columns=["ID", "Date", "Time", "Temperature", "Precipitation",
+                                         "Wind Speed", "UV Index", "Humidity"])
+        print(df)
+    else:
+        print("No weather data found in the database.")
+
+def export_to_csv():
+    """Export weather data from the database to a CSV file."""
+    conn = sqlite3.connect(DB_PATH)
+    df = pd.read_sql_query("SELECT * FROM weather_data", conn)
+    output_path = os.path.join(DB_FOLDER, "dmi_weather_data.csv")
+    df.to_csv(output_path, index=False)
+    conn.close()
+    print(f"Data exported to {output_path}")
+
+if __name__ == "__main__":
+    initialize_db()
+
+    print("Scraping weather data from DMI...")
+    weather_data = scrape_dmi_weather()
+
+    if weather_data:
+        print(f"Scraped data for {len(weather_data)} weather entries.")
+        save_to_db(weather_data)
+        print("Weather data saved to the database.")
+
+        # Display the data
+        display_weather_data()
+
+        # Ask to export to CSV
+        export_choice = input("Would you like to export the data to CSV? (yes/no): ").strip().lower()
+        if export_choice in ['yes', 'y']:
+            export_to_csv()
+    else:
+        print("No weather data found.")
