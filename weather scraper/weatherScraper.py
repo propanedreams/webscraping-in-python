@@ -30,3 +30,51 @@ def initialize_db():
     ''')
     conn.commit()
     conn.close()
+
+def scrape_dmi_weather():
+    """Scrape weather data from DMI's Aarhus page."""
+    # Set up Selenium WebDriver
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+    # Open the DMI weather page for Aarhus
+    url = "https://www.dmi.dk/lokation/show/DK/2624652/Aarhus/#9"
+    driver.get(url)
+
+    # Allow time for the page to load
+    time.sleep(5)
+
+    # Parse the page source with BeautifulSoup
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    driver.quit()
+
+    # Find all weather data entries
+    weather_entries = soup.find_all('div', class_='MuiAccordionSummary-content')
+    weather_data = []
+
+    for entry in weather_entries:
+        try:
+            # Extract data fields
+            date_time = entry.find('p', class_='bold-font xl-column').text.strip()
+            temperature = entry.find('span', class_='large-data').text.strip()
+            precipitation = entry.find_all('p', class_='small-column column-base-style')[0].text.strip()
+            wind_speed = entry.find_all('p', class_='small-column column-base-style')[1].text.strip()
+            uv_index = entry.find('span', class_='uv bold-font').text.strip()
+            humidity = entry.find_all('p', class_='small-column column-base-style hide-on-smaller-than-4')[1].text.strip()
+
+            # Append to list
+            weather_data.append({
+                "date_time": date_time,
+                "temperature": temperature,
+                "precipitation": precipitation,
+                "wind_speed": wind_speed,
+                "uv_index": uv_index,
+                "humidity": humidity
+            })
+        except Exception as e:
+            print(f"Error parsing entry: {e}")
+            continue
+
+    return weather_data
