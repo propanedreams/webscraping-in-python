@@ -30,7 +30,6 @@ def initialize_db():
     ''')
     conn.commit()
     conn.close()
-
 def scrape_dmi_weather():
     """Scrape weather data from DMI's Aarhus page."""
     # Set up Selenium WebDriver
@@ -50,28 +49,37 @@ def scrape_dmi_weather():
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     driver.quit()
 
+    # Debug: Print the structure of the page
+    print(soup.prettify())
+
     # Find all weather data entries
     weather_entries = soup.find_all('div', class_='MuiAccordionSummary-content')
-    weather_data = []
+    if not weather_entries:
+        print("No weather entries found. Check the class names or page structure.")
+        return []
 
+    weather_data = []
     for entry in weather_entries:
         try:
             # Extract data fields
-            date_time = entry.find('p', class_='bold-font xl-column').text.strip()
-            temperature = entry.find('span', class_='large-data').text.strip()
-            precipitation = entry.find_all('p', class_='small-column column-base-style')[0].text.strip()
-            wind_speed = entry.find_all('p', class_='small-column column-base-style')[1].text.strip()
-            uv_index = entry.find('span', class_='uv bold-font').text.strip()
-            humidity = entry.find_all('p', class_='small-column column-base-style hide-on-smaller-than-4')[1].text.strip()
+            date_time = entry.find('p', class_='bold-font xl-column')
+            temperature = entry.find('span', class_='large-data')
+            precipitation = entry.find_all('p', class_='small-column column-base-style')[0]
+            wind_speed = entry.find_all('p', class_='small-column column-base-style')[1]
+            uv_index = entry.find('span', class_='uv bold-font')
+            humidity = entry.find_all('p', class_='small-column column-base-style hide-on-smaller-than-4')[1]
 
-            # Append to list
+            if not all([date_time, temperature, precipitation, wind_speed, uv_index, humidity]):
+                print(f"Missing data in entry: {entry}")
+                continue
+
             weather_data.append({
-                "date_time": date_time,
-                "temperature": temperature,
-                "precipitation": precipitation,
-                "wind_speed": wind_speed,
-                "uv_index": uv_index,
-                "humidity": humidity
+                "date_time": date_time.text.strip(),
+                "temperature": temperature.text.strip(),
+                "precipitation": precipitation.text.strip(),
+                "wind_speed": wind_speed.text.strip(),
+                "uv_index": uv_index.text.strip(),
+                "humidity": humidity.text.strip()
             })
         except Exception as e:
             print(f"Error parsing entry: {e}")
