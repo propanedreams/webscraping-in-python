@@ -30,6 +30,7 @@ def initialize_db():
     ''')
     conn.commit()
     conn.close()
+
 def scrape_dmi_weather():
     """Scrape weather data from DMI's Aarhus page."""
     # Set up Selenium WebDriver
@@ -49,44 +50,43 @@ def scrape_dmi_weather():
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     driver.quit()
 
-    # Debug: Print the structure of the page
-    print(soup.prettify())
-
     # Find all weather data entries
     weather_entries = soup.find_all('div', class_='MuiAccordionSummary-content')
-    if not weather_entries:
-        print("No weather entries found. Check the class names or page structure.")
-        return []
-
     weather_data = []
+
+    if not weather_entries:
+        print("No weather entries found. Check the structure of the page.")
+        return weather_data
+
     for entry in weather_entries:
         try:
-            # Extract data fields
+            # Safely extract data fields
             date_time = entry.find('p', class_='bold-font xl-column')
             temperature = entry.find('span', class_='large-data')
-            precipitation = entry.find_all('p', class_='small-column column-base-style')[0]
-            wind_speed = entry.find_all('p', class_='small-column column-base-style')[1]
+            precipitation = entry.find_all('p', class_='small-column column-base-style')[0] if len(entry.find_all('p', class_='small-column column-base-style')) > 0 else None
+            wind_speed = entry.find_all('p', class_='small-column column-base-style')[1] if len(entry.find_all('p', class_='small-column column-base-style')) > 1 else None
             uv_index = entry.find('span', class_='uv bold-font')
-            humidity = entry.find_all('p', class_='small-column column-base-style hide-on-smaller-than-4')[1]
+            humidity = entry.find_all('p', class_='small-column column-base-style hide-on-smaller-than-4')[1] if len(entry.find_all('p', class_='small-column column-base-style hide-on-smaller-than-4')) > 1 else None
 
-            if not all([date_time, temperature, precipitation, wind_speed, uv_index, humidity]):
-                print(f"Missing data in entry: {entry}")
+            # Validate that required data is present
+            if not date_time or not temperature or not wind_speed or not humidity:
+                print(f"Skipping entry due to missing data: {entry}")
                 continue
 
+            # Append valid data
             weather_data.append({
                 "date_time": date_time.text.strip(),
                 "temperature": temperature.text.strip(),
-                "precipitation": precipitation.text.strip(),
+                "precipitation": precipitation.text.strip() if precipitation else "N/A",
                 "wind_speed": wind_speed.text.strip(),
-                "uv_index": uv_index.text.strip(),
+                "uv_index": uv_index.text.strip() if uv_index else "N/A",
                 "humidity": humidity.text.strip()
             })
         except Exception as e:
-            print(f"Error parsing entry: {e}")
+            print(f"Error processing entry: {e}")
             continue
 
     return weather_data
-
 
 def save_to_db(weather_data):
     """Save weather data to SQLite database."""
