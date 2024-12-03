@@ -78,3 +78,25 @@ def scrape_dmi_weather():
             continue
 
     return weather_data
+
+
+def save_to_db(weather_data):
+    """Save weather data to SQLite database."""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    for weather in weather_data:
+        cursor.execute('''
+            INSERT INTO weather_data (date, time, temperature, precipitation, wind_speed, uv_index, humidity)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            weather['date_time'].split(' ')[1],  # Date
+            weather['date_time'].split(' ')[-1],  # Time
+            weather['temperature'],
+            weather['precipitation'],
+            weather['wind_speed'],
+            weather['uv_index'],
+            weather['humidity']
+        ))
+    conn.commit()
+    conn.close()
