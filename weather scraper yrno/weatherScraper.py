@@ -40,11 +40,12 @@ def parse_weather_data(html):
 
 # Database setup
 DB_FOLDER = "db"
-DB_PATH = os.path.join(DB_FOLDER, "dmi_weather.db")
+DB_PATH = os.path.join(DB_FOLDER, "weather_forecast.db")
 
 # Step 3: Save data to SQLite
 def save_to_database(weather_data):
-    conn = sqlite3.connect('weather_forecast.db')
+    os.makedirs(DB_FOLDER, exist_ok=True)
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     # Create table if it doesn't exist
