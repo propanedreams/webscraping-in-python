@@ -71,7 +71,10 @@ def delete_player_stats_table(db_path):
         cursor.execute("DROP TABLE IF EXISTS player_stats")
         conn.commit()
         print("Table 'player_stats' deleted successfully.")
-
+        # Run VACUUM to free up space
+        cursor.execute("VACUUM")
+        conn.commit()
+        print("Database vacuumed successfully.")
         # Close the connection
         conn.close()
 
