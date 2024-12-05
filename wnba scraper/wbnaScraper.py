@@ -59,6 +59,29 @@ def save_to_db(player_stats):
     conn.commit()
     conn.close()
 
+
+
+def delete_player_stats_table(db_path):
+    try:
+        # Connect to the SQLite database
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        # Execute the SQL statement to drop the table
+        cursor.execute("DROP TABLE IF EXISTS player_stats")
+        conn.commit()
+        print("Table 'player_stats' deleted successfully.")
+
+        # Close the connection
+        conn.close()
+
+    except sqlite3.Error as e:
+        print(f"SQLite error: {e}")
+    except Exception as ex:
+        print(f"Unexpected error: {ex}")
+
+
+
 def scrape_wnba_stats():
     """Scrape all player stats from the WNBA Season Leaders page."""
     # Set up Selenium WebDriver
