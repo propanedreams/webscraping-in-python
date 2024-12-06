@@ -27,16 +27,6 @@ Install dependencies:
 
 pip install -r requirements.txt
 
-Run the scraper:
-
-    python scraper.py
-
-
-Example Usage
-
-    Scrape https://example.com:
-
-python scraper.py
 
 View the scraped data:
 
