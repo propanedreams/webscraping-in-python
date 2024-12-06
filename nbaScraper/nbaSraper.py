@@ -7,7 +7,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime
-
 DB_FOLDER = "db"
 DB_PATH = os.path.join(DB_FOLDER, "nba_stats.db")
 # Initialize SQLite Database
