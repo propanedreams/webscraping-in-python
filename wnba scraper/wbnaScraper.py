@@ -59,8 +59,6 @@ def save_to_db(player_stats):
     conn.commit()
     conn.close()
 
-
-
 def delete_player_stats_table(db_path):
     try:
         # Connect to the SQLite database
@@ -82,8 +80,6 @@ def delete_player_stats_table(db_path):
         print(f"SQLite error: {e}")
     except Exception as ex:
         print(f"Unexpected error: {ex}")
-
-
 
 def scrape_wnba_stats():
     """Scrape all player stats from the WNBA Season Leaders page."""

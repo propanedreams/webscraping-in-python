@@ -15,8 +15,6 @@ def get_todays_datetime():
     """Return today's date and time."""
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Format: YYYY-MM-DD HH:MM:SS
 
-
-
 def initialize_db():
     """Initialize the SQLite database and create the table."""
     os.makedirs(DB_FOLDER, exist_ok=True)
@@ -120,29 +118,6 @@ def scrape_bbc_news():
     driver.quit()
     return news_list, url
 
-# def display_news():
-#     """Display all news stored in the SQLite database."""
-#     conn = sqlite3.connect(DB_PATH)
-#     cursor = conn.cursor()
-
-#     # Retrieve all news
-#     cursor.execute("SELECT * FROM news")
-#     rows = cursor.fetchall()
-
-#     if not rows:
-#         print("No news articles found in the database.")
-#     else:
-#         for row in rows:
-#             print(f"ID: {row[0]}")
-#             print(f"Headline: {row[1]}")
-#             print(f"Description: {row[2]}")
-#             print(f"Last Updated: {row[3]}")
-#             print(f"Category: {row[4]}")
-#             print(f"Source: {row[5]}")
-#             print("-" * 50)
-
-#     conn.close()
-
 # Main script
 initialize_db()
 print("Scraping BBC News...")
@@ -154,7 +129,3 @@ if news_list:
     print("News articles saved to the database.")
 else:
     print("No news articles found.")
-
-# # Display saved news
-# print("\nSaved News Articles:")
-# display_news()
