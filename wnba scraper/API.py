@@ -1,7 +1,11 @@
 from flask import Flask, jsonify
 import sqlite3
-
+from flask_cors import CORS
 app = Flask(__name__)
+
+# Enable CORS for all routes
+CORS(app)
+
 # Database Path
 DB_FOLDER = "db"
 DB_PATH = f"{DB_FOLDER}/wnba_stats.db"
