@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Stats</title>
+    <style>
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Player Stats</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Rank</th>
+                <th>Player Name</th>
+                <th>Games Played</th>
+                <th>Minutes Per Game</th>
+                <th>Points Per Game</th>
+                <th>Field Goals Made</th>
+                <th>Field Goals Attempted</th>
+                <th>Field Goal %</th>
+                <th>Rebounds</th>
+                <th>Assists</th>
+                <th>Steals</th>
+                <th>Blocks</th>
+                <th>Turnovers</th>
+            </tr>
+        </thead>
+        <tbody id="player-stats-table">
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+    <script>
+        // Fetch data from the Flask API
+        fetch('http://127.0.0.1:5000/api/player_stats')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('player-stats-table');
+                data.forEach(player => {
+                    const row = document.createElement('tr');
+                    Object.values(player).forEach(value => {
+                        const cell = document.createElement('td');
+                        cell.textContent = value;
+                        row.appendChild(cell);
+                    });
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>
