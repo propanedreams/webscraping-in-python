@@ -5,10 +5,11 @@ app = Flask(__name__)
 # Database Path
 DB_FOLDER = "db"
 DB_PATH = f"{DB_FOLDER}/wnba_stats.db"
-# Database connection function
+
+# Helper function to get a database connection
 def get_db_connection():
-    conn = sqlite3.connect(DB_PATH)  # Replace with your database name
-    conn.row_factory = sqlite3.Row  # Enable column-based access to rows
+    conn = sqlite3.connect(DB_PATH)  # Replace with your actual database file
+    conn.row_factory = sqlite3.Row  # This makes rows behave like dictionaries
     return conn
 
 # API route to fetch player stats
@@ -29,14 +30,6 @@ def get_player_stats():
         return jsonify(player_stats)  # Return the data as JSON
     except sqlite3.Error as e:
         return jsonify({"error": str(e)}), 500
-
-# Route to display data in a browser
-@app.route('/')
-def home():
-    return '''
-        <h1>Player Stats API</h1>
-        <p>Visit <a href="/api/player_stats">/api/player_stats</a> to view player stats data.</p>
-    '''
 
 if __name__ == '__main__':
     app.run(debug=True)
